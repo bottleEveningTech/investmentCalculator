@@ -13,14 +13,15 @@ import { InvestmentResults } from "./investment-results/investment-results";
 })
 export class App {
   protected readonly title = signal('investment-calculator');
-  public resultsData?: {
+  //using signals
+  public resultsData = signal<{
       year: number,
       interest: number,
       valueEndOfYear: number,
       annualInvestment: number,
       totalInterest: number,
       totalAmountInvested: number,
-    }[];
+    }[] | undefined>(undefined);
   // Use the below code as a help
   // e.g., integrate it into a service or component
   // You may need to tweak it, depending on where and how you use it
@@ -45,7 +46,8 @@ export class App {
         totalAmountInvested: initialInvestment + annualInvestment * year,
       });
     }
-    this.resultsData = annualData;
+    // this.resultsData = annualData;
+    this.resultsData.set(annualData);
   }
 
 }
