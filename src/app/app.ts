@@ -2,43 +2,50 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from "./header/header";
 import { UserInput } from "./user-input/user-input";
+import { InvestmentInput } from './investment-input.model';
+import { InvestmentResults } from "./investment-results/investment-results";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, UserInput],
+  imports: [RouterOutlet, Header, UserInput, InvestmentResults],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('investment-calculator');
-
+  public resultsData?: {
+      year: number,
+      interest: number,
+      valueEndOfYear: number,
+      annualInvestment: number,
+      totalInterest: number,
+      totalAmountInvested: number,
+    }[];
   // Use the below code as a help
-// e.g., integrate it into a service or component
-// You may need to tweak it, depending on where and how you use it
+  // e.g., integrate it into a service or component
+  // You may need to tweak it, depending on where and how you use it
 
- calculateInvestmentResults(data: {initialInvestment: number, duration: number, 
-  expectedReturn: number, annualInvestment: number}) {
-  const { initialInvestment, annualInvestment, expectedReturn, duration} = data;
-  const annualData = [];
-  let investmentValue = initialInvestment;
+  calculateInvestmentResults(data: InvestmentInput) {
+    const { initialInvestment, annualInvestment, expectedReturn, duration } = data;
+    const annualData = [];
+    let investmentValue = initialInvestment;
 
-  for (let i = 0; i < duration; i++) {
-    const year = i + 1;
-    const interestEarnedInYear = investmentValue * (expectedReturn / 100);
-    investmentValue += interestEarnedInYear + annualInvestment;
-    const totalInterest =
-      investmentValue - annualInvestment * year - initialInvestment;
-    annualData.push({
-      year: year,
-      interest: interestEarnedInYear,
-      valueEndOfYear: investmentValue,
-      annualInvestment: annualInvestment,
-      totalInterest: totalInterest,
-      totalAmountInvested: initialInvestment + annualInvestment * year,
-    });
+    for (let i = 0; i < duration; i++) {
+      const year = i + 1;
+      const interestEarnedInYear = investmentValue * (expectedReturn / 100);
+      investmentValue += interestEarnedInYear + annualInvestment;
+      const totalInterest =
+        investmentValue - annualInvestment * year - initialInvestment;
+      annualData.push({
+        year: year,
+        interest: interestEarnedInYear,
+        valueEndOfYear: investmentValue,
+        annualInvestment: annualInvestment,
+        totalInterest: totalInterest,
+        totalAmountInvested: initialInvestment + annualInvestment * year,
+      });
+    }
+    this.resultsData = annualData;
   }
-
-  return annualData;
-}
 
 }
